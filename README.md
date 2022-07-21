@@ -1,6 +1,6 @@
 # occupalauney
 
-A (not yet implemented) Model Synthesis demonstration on irregular triangular grids. Made with raylib.
+Place points inside your territories on which delaunay will be run on. The triangles generated after your turn belong to you.
 
 ## Build instructions
 
