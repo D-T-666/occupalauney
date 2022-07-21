@@ -5,11 +5,11 @@
 
 using std::vector;
  
+
 /**
  * === Geometry ===
  */
 
-enum TriState { IS_BEING_CREATED, IS_BEING_DELETED, IDLE };
 
 // Triangle object
 // * stores indices of the vertices and a couple other variables
@@ -81,34 +81,9 @@ float getTriDegeneracy(Vector2 a, Vector2 b, Vector2 c);
 bool isClockwise(Vector2 a, Vector2 b, Vector2 c);
 
 /**
- * === Pictures ===
- */
-
-
-// Triangular texture object
-struct TriTexture {
-    Texture2D tex;
-    int width, height;
-    Vector2 corners[3] = {
-        (Vector2){0, 0}, 
-        (Vector2){0, 0}, 
-        (Vector2){0, 0}
-    };
-};
-
-// Get a triangular texture from a regular texture
-TriTexture getTriTexture(const Texture2D &tex, Vector2 a, Vector2 b, Vector2 c);
-
-// Draw a triangular texture
-void drawTriTexture(const TriTexture &tex, Vector2 a, Vector2 b, Vector2 c);
-
-// Draw a triangular texture padded
-void drawTriTexturePadded(const TriTexture &tex, Vector2 a, Vector2 b, Vector2 c, int padding);
-
-
-/**
  * === Utils ===
  */
+
 
 // Draw a filled in triangle with a padding applied to the given points
 void DrawTriangleFillPadded(Vector2 p1, Vector2 p2, Vector2 p3, int padding,
@@ -182,26 +157,17 @@ void pushUnique(vector<T> &vec, T &elt) {
     if (!isin) vec.push_back(elt);
 }
 
+
 /**
  * === World ===
  */
 
-enum WorldState {
-    GENERATING_VERTS,
-    TRIANGULATING,
-    CLEANING_UP,
-    SMOOTHING,
-    DONE,
-};
-
-// The main world class
 class World {
    public:
-    int w, h;
+    int w, h, s, p;
 
     char pressed_key = '_';
 
-    int p;
 
     vector<Vert> verts;
     vector<Tri> tris;
@@ -215,7 +181,7 @@ class World {
 
    public:
     World(){};
-    void create(int width, int height);
+    void create(int width, int height, int size);
 
     void update(int frameCount, Vector2 _mouse);
     void update(int frameCount);
@@ -230,9 +196,11 @@ class World {
     void triangulate(int i);
 };
 
+
 /**
  * === Application ===
  */
+
 
 class Application {
    public:

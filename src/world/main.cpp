@@ -10,9 +10,10 @@
 
 using std::vector;
 
-void World::create(int width, int height) {
+void World::create(int width, int height, int size) {
     w = width;
     h = height;
+    s = size;
 
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
@@ -26,24 +27,16 @@ void World::create(int width, int height) {
     vert_grid[3][3] = 1;
     vert_grid[5][5] = 1;
 
-    p = 100; // Padding
-
-    const int pw = w - p * 2; // Padded width
-    const int ph = h - p * 2; // Padded height
-
-    createVert(verts,     p,     p);                   // A - 0
-    createVert(verts, w - p,     p);                   // B - 1
-    createVert(verts, w - p, h - p);                   // C - 2
-    createVert(verts,     p, h - p);                   // D - 3
-    createVert(verts, pw * 4 / 8 + p, ph * 4 / 8 + p); // E - 4
-    // createVert(verts, pw * 5 / 8 + p, ph * 5 / 8 + p); // F - 5
+    createVert(verts, 0, 0);         // A - 0
+    createVert(verts, w, 0);         // B - 1
+    createVert(verts, w, h);         // C - 2
+    createVert(verts, 0, h);         // D - 3
+    createVert(verts, w / 2, h / 2); // E - 4
 
     insertNewTri(verts, tris, 0, 1, 4, 0); // ABE
     insertNewTri(verts, tris, 0, 4, 3, 0); // AED
     insertNewTri(verts, tris, 2, 3, 4, 1); // CDF
     insertNewTri(verts, tris, 2, 4, 1, 1); // CFB
-    // insertNewTri(verts, tris, 4, 1, 5, 0); // EBF
-    // insertNewTri(verts, tris, 4, 5, 3, 1); // EFD
 }
 
 int World::getTriangleWithPoint(const Vector2 & p) {

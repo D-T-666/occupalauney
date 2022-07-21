@@ -8,14 +8,14 @@ void World::update(int frameCount, Vector2 _mouse) {
 }
 
 void World::mouseClicked(int mouse_button) {
-    // TODO: implement mouse click event
     if (mouse_button == 0) {
         int mi = -1, mj = -1;
         Vector2 target = getCursorTarget();
+        int tri_group = tris[getTriangleWithPoint(target)].group;
 
         if (target.x >= p && target.x <= w - p &&
             target.y >= p && target.y <= h - p &&
-            tris[getTriangleWithPoint(target)].group == turn) {
+            (tri_group == turn || tri_group < 0)) {
 
             mi = (target.x - p) / int(w / 8 - p / 4);
             mj = (target.y - p) / int(h / 8 - p / 4);
