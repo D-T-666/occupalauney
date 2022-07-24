@@ -13,12 +13,14 @@ void World::mouseClicked(int mouse_button) {
         Vector2 target = getCursorTarget();
         int tri_group = tris[getTriangleWithPoint(target)].group;
 
-        if (target.x >= p && target.x <= w - p &&
-            target.y >= p && target.y <= h - p &&
-            (tri_group == turn || tri_group < 0)) {
 
-            mi = (target.x - p) / int(w / 8 - p / 4);
-            mj = (target.y - p) / int(h / 8 - p / 4);
+        if (target.x >= 0 && target.x <= w &&
+            target.y >= 0 && target.y <= h &&
+            (tri_group == turn || tri_group < 1)) {
+
+            mi = (target.x) / s;
+            mj = (target.y) / s;
+            std::cout << "[" << mi << "," << mj << "]\n";
 
             if (vert_grid[mi][mj] == 0) {
                 vert_grid[mi][mj] = 1;

@@ -80,6 +80,7 @@ float getTriDegeneracy(Vector2 a, Vector2 b, Vector2 c);
 // Check if a given trio of vertices is in a clockwise order 
 bool isClockwise(Vector2 a, Vector2 b, Vector2 c);
 
+
 /**
  * === Utils ===
  */
@@ -175,9 +176,9 @@ class World {
     Vector2 mouse;
     Vector2 cursor;
 
-    int vert_grid[9][9];
+    vector<vector<int>> vert_grid;
 
-    int turn = 0;
+    int turn = 1;
 
    public:
     World(){};
@@ -193,7 +194,7 @@ class World {
     Vector2 getCursorTarget();
 
     void moveMade();
-    void triangulate(int i);
+    void triangulate(int i, int new_tri_group = 3);
 };
 
 

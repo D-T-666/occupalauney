@@ -15,28 +15,36 @@ void World::create(int width, int height, int size) {
     h = height;
     s = size;
 
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
-            vert_grid[i][j] = 0;
+    createVert(verts,             s / 2 - 1,             s / 2 - 1); // A - 0
+    createVert(verts, w / s * s - s / 2 + 1,             s / 2 - 1); // B - 1
+    createVert(verts, w / s * s - s / 2 + 1, h / s * s - s / 2 + 1); // C - 2
+    createVert(verts,             s / 2 - 1, h / s * s - s / 2 + 1); // D - 3
+
+    insertNewTri(verts, tris, 0, 1, 2, 0);
+    insertNewTri(verts, tris, 0, 2, 3, 0);
+
+    for (int i = 0; i < w / s + 1; i++) {
+        vector<int> col;
+
+        for (int j = 0; j < h / s + 1 ; j++) {
+            col.push_back(0);
+
+            if (i % (w / s - 1) != 0 || j % (h / s - 1) != 0)
+            if (i + 2 * ((j) % 2) < w / s && j < h / s)
+            if (i % 4 == 0 && j % 3 == 0) {
+                createVert(
+                    verts, 
+                    Vector2{
+                        float((i + 2 * ((j) % 2)) * s + s / 2), 
+                        float(j * s + s / 2)
+                    }
+                );
+                triangulate(verts.size() - 1, 0);
+            }
         }
+
+        vert_grid.push_back(col);
     }
-    vert_grid[0][0] = 1;
-    vert_grid[8][0] = 1;
-    vert_grid[8][8] = 1;
-    vert_grid[0][8] = 1;
-    vert_grid[3][3] = 1;
-    vert_grid[5][5] = 1;
-
-    createVert(verts, 0, 0);         // A - 0
-    createVert(verts, w, 0);         // B - 1
-    createVert(verts, w, h);         // C - 2
-    createVert(verts, 0, h);         // D - 3
-    createVert(verts, w / 2, h / 2); // E - 4
-
-    insertNewTri(verts, tris, 0, 1, 4, 0); // ABE
-    insertNewTri(verts, tris, 0, 4, 3, 0); // AED
-    insertNewTri(verts, tris, 2, 3, 4, 1); // CDF
-    insertNewTri(verts, tris, 2, 4, 1, 1); // CFB
 }
 
 int World::getTriangleWithPoint(const Vector2 & p) {
@@ -52,20 +60,12 @@ void World::moveMade() {
     Vector2 target = getCursorTarget();
     createVert(verts, target);
 
-    triangulate(verts.size() - 1);
+    triangulate(verts.size() - 1, turn);
 
-    // for (int i = tris.size() - 1; i >= 0; i--) {
-        // Tri t = tris[i];
-
-        // if (pointInCircumcircle(target, verts[t.a], verts[t.b], verts[t.c])) {
-            // eraseTri(verts, tris, i);
-        // }
-    // }
-
-    turn = 1 - turn;
+    turn = 2 - (turn - 1);
 }
 
-void World::triangulate(int i) {
+void World::triangulate(int i, int new_tri_group) {
     std::vector<int> vertinds;
 
     auto insvert = [&](int ind) {
@@ -96,16 +96,13 @@ void World::triangulate(int i) {
 
     for (int j = 0; j < vertinds.size(); j++) {
         insertNewTri(verts, tris, i, vertinds[j],
-                     vertinds[(j + 1) % vertinds.size()], turn);
+                     vertinds[(j + 1) % vertinds.size()], new_tri_group);
     }
 }
 
 Vector2 World::getCursorTarget() {
-    const int cell_w = int(w / 8 - p / 4);
-    const int cell_h = int(h / 8 - p / 4);
-    
     return {
-        float(int(mouse.x + cell_w / 2) / cell_w * cell_w), 
-        float(int(mouse.y + cell_h / 2) / cell_h * cell_h)
+        float(int(mouse.x) / s * s + s / 2), 
+        float(int(mouse.y) / s * s + s / 2)
     };
 }

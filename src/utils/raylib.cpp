@@ -40,7 +40,7 @@ void paddTriangleInPlace(Vector2 &p1, Vector2 &p2, Vector2 &p3, int padding) {
 
 void DrawTriangleFillPadded(Vector2 p1, Vector2 p2, Vector2 p3, int d,
                             Color color) {
-    if (getTriDegeneracy(p1, p2, p3) < 0.05f) return;
+    if (getTriDegeneracy(p1, p2, p3) < 0.01f) return;
 
     paddTriangleInPlace(p1, p2, p3, d);
 
@@ -49,7 +49,7 @@ void DrawTriangleFillPadded(Vector2 p1, Vector2 p2, Vector2 p3, int d,
 
 void DrawTriangleLinesPadded(Vector2 p1, Vector2 p2, Vector2 p3, int d,
                              int weight, Color color) {
-    if (getTriDegeneracy(p1, p2, p3) < 0.05f) return;
+    if (getTriDegeneracy(p1, p2, p3) < 0.01f) return;
 
     paddTriangleInPlace(p1, p2, p3, d);
 
