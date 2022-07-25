@@ -14,3 +14,11 @@ cd ..
 cmake --build build
 build/bin/occupalauney
 ```
+
+## tasks
+
+- [ ] make gameplay
+  - [x] turns
+    - [ ] indication
+  - [ ] scoring system
+  - [ ] win/lose conditions

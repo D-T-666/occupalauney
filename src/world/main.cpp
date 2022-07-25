@@ -15,22 +15,33 @@ void World::create(int width, int height, int size) {
     h = height;
     s = size;
 
-    createVert(verts,             s / 2 - 1,             s / 2 - 1); // A - 0
-    createVert(verts, w / s * s - s / 2 + 1,             s / 2 - 1); // B - 1
-    createVert(verts, w / s * s - s / 2 + 1, h / s * s - s / 2 + 1); // C - 2
-    createVert(verts,             s / 2 - 1, h / s * s - s / 2 + 1); // D - 3
+    int c = w / s;
+    int r = h / s;
 
+    // Create the shell
+    createVert(verts,         s / 2 - 10,         s / 2 - 10); // A - 0
+    createVert(verts, c * s - s / 2 + 10,         s / 2 - 10); // B - 1
+    createVert(verts, c * s - s / 2 + 10, r * s - s / 2 + 10); // C - 2
+    createVert(verts,         s / 2 - 10, r * s - s / 2 + 10); // D - 3
     insertNewTri(verts, tris, 0, 1, 2, 0);
     insertNewTri(verts, tris, 0, 2, 3, 0);
 
-    for (int i = 0; i < w / s + 1; i++) {
+    // The corners [optional]
+    createVert(verts,         s / 2,         s / 2); // A - 0
+    createVert(verts, c * s - s / 2,         s / 2); // B - 1
+    createVert(verts, c * s - s / 2, r * s - s / 2); // C - 2
+    createVert(verts,         s / 2, r * s - s / 2); // D - 3
+    for (int i = 4; i < 8; i++)
+        triangulate(i, 0);
+
+    for (int i = 0; i < c + 1; i++) {
         vector<int> col;
 
-        for (int j = 0; j < h / s + 1 ; j++) {
-            col.push_back(0);
+        for (int j = 0; j < r + 1 ; j++) {
+            col.push_back((i % c) * (j % r) == 0);
 
-            if (i % (w / s - 1) != 0 || j % (h / s - 1) != 0)
-            if (i + 2 * ((j) % 2) < w / s && j < h / s)
+            if (i % (c - 1) != 0 || j % (r - 1) != 0)
+            if (i + 2 * ((j) % 2) < c && j < r)
             if (i % 4 == 0 && j % 3 == 0) {
                 createVert(
                     verts, 
@@ -45,11 +56,21 @@ void World::create(int width, int height, int size) {
 
         vert_grid.push_back(col);
     }
+
+    // Remove the shell
+    for (int i = 0; i < 4; i++)
+        eraseVert(verts, tris, 0);
 }
 
 int World::getTriangleWithPoint(const Vector2 & p) {
-    for (int i = 0; i < tris.size(); i++) {
-        if (PointInTriangle(p, verts[tris[i].a], verts[tris[i].b], verts[tris[i].c]))
+    Vector2 a, b, c;
+    for (int i = tris.size() - 1; i >= 0; i--) {
+        a = verts[tris[i].a];
+        b = verts[tris[i].b];
+        c = verts[tris[i].c];
+        paddTriangleInPlace(a, b, c, -1);
+
+        if (PointInTriangle(p, a, b, c))
             return i;
     }
 
@@ -62,7 +83,7 @@ void World::moveMade() {
 
     triangulate(verts.size() - 1, turn);
 
-    turn = 2 - (turn - 1);
+    turn = turn % 6 + 1;
 }
 
 void World::triangulate(int i, int new_tri_group) {

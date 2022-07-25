@@ -25,10 +25,14 @@ void Application::draw() {
         }
     }
 
-    Color colors[3] = {
-        {255, 255, 255, 50},
-        {255, 123, 108, 150}, 
-        {52, 235, 86, 150}
+    Color colors[7] = {
+        GetColor(0x00779911),
+        GetColor(0xe50000aa),
+        GetColor(0xff8d00aa),
+        GetColor(0xffee00aa),
+        GetColor(0x028121aa),
+        GetColor(0x004cffaa),
+        GetColor(0x760088aa)
     };
 
     int turn = wld.turn;
@@ -62,10 +66,12 @@ void Application::draw() {
     int t_group = wld.tris[hovering_triangle].group;
     if (hovering_triangle >= 0 && (t_group == turn || wld.tris[hovering_triangle].group == 0)) {
         DrawCircle(wld.cursor.x, wld.cursor.y, 8, WHITE);
+        DrawCircle(wld.cursor.x, wld.cursor.y, 8, colors[turn]);
         DrawCircle(wld.cursor.x, wld.cursor.y, 7, {28, 26, 33, 255});
         DrawCircle(wld.cursor.x, wld.cursor.y, 4, WHITE);
     } else {
         DrawCircle(wld.cursor.x, wld.cursor.y, 8, WHITE);
+        DrawCircle(wld.cursor.x, wld.cursor.y, 8, colors[turn]);
         DrawCircle(wld.cursor.x, wld.cursor.y, 7, {28, 26, 33, 255});
     }
 }
